@@ -47,7 +47,16 @@ namespace CoreMVC_Spider.Controllers
                     var document = new HtmlDocument();
                     document.LoadHtml(result);
                     var nodes = document.DocumentNode.SelectNodes("//*[@id='newhouse_loupai_list']/ul");
-                    _logger.LogInformation(nodes.FirstOrDefault().InnerHtml);
+                    if (nodes != null && nodes.Count > 0)
+                    {
+                        var loupanUlNode = nodes.First();
+                        var loupanLiNodes = loupanUlNode.SelectNodes(".//li");
+
+                        foreach (var li in loupanLiNodes) {
+
+                            _logger.LogInformation(li.InnerText);
+                        }
+                    }
 
                 }
             }
