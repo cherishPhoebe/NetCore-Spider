@@ -328,3 +328,4 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+/DotNetCore_Spider/CoreMVC_Spider/internal-nlog.txt
