@@ -2,6 +2,8 @@
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -31,7 +33,6 @@ namespace CoreMVC_Spider.Controllers
             request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
 
-
             var handler = new HtmlTextHandler()
             {
                 AutomaticDecompression = DecompressionMethods.GZip,
@@ -42,8 +43,9 @@ namespace CoreMVC_Spider.Controllers
             {
                 using (var content = response.Content)
                 {
-                    var result = await content.ReadAsStringAsync();
+                    var houseList = new List<HouseViewModel>();
 
+                    var result = await content.ReadAsStringAsync();
                     var document = new HtmlDocument();
                     document.LoadHtml(result);
                     var nodes = document.DocumentNode.SelectNodes("//*[@id='newhouse_loupai_list']/ul");
@@ -51,13 +53,39 @@ namespace CoreMVC_Spider.Controllers
                     {
                         var loupanUlNode = nodes.First();
                         var loupanLiNodes = loupanUlNode.SelectNodes(".//li");
+                        foreach (var li in loupanLiNodes)
+                        {
+                            var houseModel = new HouseViewModel();
+                            var titleNodes = li.SelectNodes(".//div[@class=\"nlcd_name\"]/a");
+                            var priceNodes = li.SelectNodes(".//div[@class=\"nhouse_price\"]/span");
+                            var houseTypeNodes = li.SelectNodes(".//div[@class=\"house_type clearfix\"]");
+                            var addressNodes = li.SelectNodes(".//div[@class=\"address\"]");
+                            var telNodes = li.SelectNodes(".//div[@class=\"tel\"]");
+                            var buildingTypeNodes = li.SelectNodes(".//div[@class=\"fangyuan\"]/a");
 
-                        foreach (var li in loupanLiNodes) {
+                            if (titleNodes != null && titleNodes.Count > 0)
+                            {
+                                if (!string.IsNullOrEmpty(titleNodes.First().InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "")))
+                                {
+                                    houseModel.Name = titleNodes.First().InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "");
+                                    houseModel.Price = priceNodes?.FirstOrDefault()?.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "");
+                                    houseModel.RoomType = houseTypeNodes?.FirstOrDefault()?.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "");
+                                    houseModel.Address = addressNodes?.FirstOrDefault()?.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "");
+                                    houseModel.Tel = telNodes?.FirstOrDefault()?.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "");
 
-                            _logger.LogInformation(li.InnerText);
+                                    List<string> buildingTypeList = new List<string>();
+                                    foreach (var buildingType in buildingTypeNodes)
+                                    {
+                                        buildingTypeList.Add(buildingType?.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", ""));
+                                    }
+                                    houseModel.BuildingType = string.Join(",", buildingTypeList);
+
+                                    houseList.Add(houseModel);
+                                }
+                            }
                         }
                     }
-
+                    _logger.LogInformation(JsonConvert.SerializeObject(houseList));
                 }
             }
 
