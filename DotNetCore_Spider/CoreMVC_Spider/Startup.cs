@@ -36,6 +36,10 @@ namespace CoreMVC_Spider
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             services.AddHttpClient();
 
+            services.AddHttpClient("House")
+                .ConfigurePrimaryHttpMessageHandler(x => new HouseHandler());
+
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

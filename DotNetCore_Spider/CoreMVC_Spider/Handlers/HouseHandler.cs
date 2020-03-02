@@ -1,12 +1,17 @@
-﻿using System.Net.Http;
+﻿using System.Net;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CoreMVC_Spider
+namespace CoreMVC_Spider.Handlers
 {
-    public class HtmlTextHandler : HttpClientHandler
+    public class HouseHandler : HttpClientHandler
     {
+        public HouseHandler() =>
+            this.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+        
+
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var response = await base.SendAsync(request, cancellationToken);

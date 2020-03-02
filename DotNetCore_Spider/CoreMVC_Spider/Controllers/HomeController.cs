@@ -32,12 +32,8 @@ namespace CoreMVC_Spider.Controllers
             request.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3");
             request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
-
-            var handler = new HtmlTextHandler()
-            {
-                AutomaticDecompression = DecompressionMethods.GZip,
-            };
-            HttpClient client = new HttpClient(handler);
+            
+            HttpClient client = _httpClientFactory.CreateClient("House");
 
             using (var response = await client.SendAsync(request))
             {
