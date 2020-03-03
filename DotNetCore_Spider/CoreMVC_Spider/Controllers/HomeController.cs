@@ -92,9 +92,9 @@ namespace CoreMVC_Spider.Controllers
             {
                 var houseHomeRequest = new HttpRequestMessage(HttpMethod.Get, house.Url);
 
-                using (var detailResponse = await client.SendAsync(houseHomeRequest))
+                using (var homeResponse = await client.SendAsync(houseHomeRequest))
                 {
-                    using (var content = detailResponse.Content)
+                    using (var content = homeResponse.Content)
                     {
                         var result = await content.ReadAsStringAsync();
                         var document = new HtmlDocument();
@@ -104,10 +104,39 @@ namespace CoreMVC_Spider.Controllers
                         if (detailLinkNodes != null && detailLinkNodes.Count > 0)
                         {
                             house.HomeUrl = "https:" + detailLinkNodes.First().GetAttributeValue("href", "");
-                            Regex reg = new Regex(@"house.{1}(\d*).{1}housedetail",RegexOptions.IgnoreCase);
+                            Regex reg = new Regex(@"house.{1}(\d*).{1}housedetail", RegexOptions.IgnoreCase);
                             var id = reg.Match(house.HomeUrl).Groups.LastOrDefault()?.Value;
                             house.Id = id;
 
+                            var detailRequest = new HttpRequestMessage(HttpMethod.Get, house.HomeUrl);
+
+                            using (var detailResponse = await client.SendAsync(detailRequest))
+                            {
+                                using (var detailContent = detailResponse.Content)
+                                {
+                                    var detailResult = await detailContent.ReadAsStringAsync();
+                                    var detailDoc = new HtmlDocument();
+                                    detailDoc.LoadHtml(detailResult);
+
+                                    var baseInfoNode = detailDoc.DocumentNode.SelectNodes("//div[@class=\"main-item\"]");
+                                    ///html/body/div[5]/div/div[1]/div[1]/div/div[2]/a/span[2]
+                                    var pointNodes = baseInfoNode?.FirstOrDefault().SelectNodes(".//a/span[2]");
+                                    house.Point = pointNodes?.FirstOrDefault()?.InnerText;
+                                    var baseInfoLiNodes = baseInfoNode?.FirstOrDefault().SelectNodes(".//ul/li");
+                                    var baseInfoDic = new Dictionary<string, string>();
+                                    foreach (var li in baseInfoLiNodes)
+                                    {
+                                        var keyNode = li.SelectSingleNode(".//div[1]");
+                                        var valueNode = li.SelectSingleNode(".//div[2]");
+                                        if (keyNode is null)
+                                            break;
+                                        baseInfoDic.Add(keyNode.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "").Replace("：",""),
+                                            valueNode.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", ""));
+                                    }
+                                    house.BaseInfoJson = JsonConvert.SerializeObject(baseInfoDic);
+                                }
+
+                            }
                         }
                     }
                 }

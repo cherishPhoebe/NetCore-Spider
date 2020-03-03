@@ -18,7 +18,9 @@
         public string RoomType { get; set; }
 
         public string BuildingType { get; set; }
+        public string Point { get; internal set; }
 
+        public string BaseInfoJson { get; set; }
 
     }
 }

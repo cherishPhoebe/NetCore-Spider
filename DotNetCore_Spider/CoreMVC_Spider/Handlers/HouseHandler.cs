@@ -17,7 +17,7 @@ namespace CoreMVC_Spider.Handlers
             var response = await base.SendAsync(request, cancellationToken);
 
             var contentType = response.Content.Headers.ContentType;
-            contentType.CharSet = await getCharSetAsync(response.Content);
+            contentType.CharSet = "gb2312";
 
             return response;
         }
