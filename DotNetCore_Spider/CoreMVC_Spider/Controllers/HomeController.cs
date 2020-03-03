@@ -133,6 +133,19 @@ namespace CoreMVC_Spider.Controllers
                                         baseInfoDic.Add(keyNode.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "").Replace("：",""),
                                             valueNode.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", ""));
                                     }
+
+                                    var PreSaleTable = detailDoc.DocumentNode.SelectNodes("//div[@class=\"table-all\"][1]/table");
+                                    var perSaleTrs = PreSaleTable?.FirstOrDefault()?.SelectNodes(".//tr");
+                                    var perSaleList = new List<PerSaleInfo>();
+                                    for (int i = 1; i < perSaleTrs.Count; i++) {
+                                        var perSaleInfo = new PerSaleInfo();
+                                        perSaleInfo.License = perSaleTrs[i].SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
+                                        perSaleInfo.IssueDate = perSaleTrs[i].SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText;
+                                        perSaleInfo.BindBuilding = perSaleTrs[i].SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText;
+                                        perSaleList.Add(perSaleInfo);
+                                    }
+                                    house.PerSales = perSaleList;
+
                                     house.BaseInfoJson = JsonConvert.SerializeObject(baseInfoDic);
                                 }
 

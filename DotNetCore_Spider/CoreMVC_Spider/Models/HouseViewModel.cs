@@ -1,4 +1,6 @@
-﻿namespace CoreMVC_Spider.Models
+﻿using System.Collections.Generic;
+
+namespace CoreMVC_Spider.Models
 {
     public class HouseViewModel
     {
@@ -22,5 +24,14 @@
 
         public string BaseInfoJson { get; set; }
 
+        public List<PerSaleInfo> PerSales { get; set; }
+    }
+
+    public class PerSaleInfo {
+        public string License { get; set; }
+
+        public string IssueDate { get; set; }
+
+        public string BindBuilding { get; set; }
     }
 }
