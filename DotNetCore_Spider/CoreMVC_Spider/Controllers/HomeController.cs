@@ -23,7 +23,13 @@ namespace CoreMVC_Spider.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
+        {
+            //await GetHouseData();
+            return View();
+        }
+
+        private async Task GetHouseData()
         {
             // 抓取https://cs.newhouse.fang.com/house/s/b91/ 楼盘数据
             var urlList = new List<string>();
@@ -173,7 +179,7 @@ namespace CoreMVC_Spider.Controllers
                                     {
                                         var priceInfo = new PriceInfo();
                                         priceInfo.RecordDate = tr.SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
-                                        priceInfo.AvgPrice = tr.SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;","");
+                                        priceInfo.AvgPrice = tr.SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;", "");
                                         priceInfo.StartingPrice = tr.SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;", "");
                                         priceInfo.PriceDescription = tr.SelectNodes(".//td[4]")?.FirstOrDefault()?.InnerText;
                                         priceList.Add(priceInfo);
@@ -191,8 +197,6 @@ namespace CoreMVC_Spider.Controllers
 
 
             _logger.LogInformation(JsonConvert.SerializeObject(houseList));
-
-            return View();
         }
 
         public IActionResult Privacy()
