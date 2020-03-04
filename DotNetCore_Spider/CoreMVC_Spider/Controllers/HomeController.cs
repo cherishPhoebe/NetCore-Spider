@@ -117,36 +117,70 @@ namespace CoreMVC_Spider.Controllers
                                     var detailResult = await detailContent.ReadAsStringAsync();
                                     var detailDoc = new HtmlDocument();
                                     detailDoc.LoadHtml(detailResult);
-
-                                    var baseInfoNode = detailDoc.DocumentNode.SelectNodes("//div[@class=\"main-item\"]");
-                                    ///html/body/div[5]/div/div[1]/div[1]/div/div[2]/a/span[2]
-                                    var pointNodes = baseInfoNode?.FirstOrDefault().SelectNodes(".//a/span[2]");
+                                    // 基础信息
+                                    var baseInfoNode = detailDoc.DocumentNode.SelectNodes("//div[@class=\"main-item\"]")?[0];
+                                    var pointNodes = baseInfoNode?.SelectNodes(".//a/span[2]");
                                     house.Point = pointNodes?.FirstOrDefault()?.InnerText;
-                                    var baseInfoLiNodes = baseInfoNode?.FirstOrDefault().SelectNodes(".//ul/li");
+                                    var baseInfoLiNodes = baseInfoNode?.SelectNodes(".//ul/li");
                                     var baseInfoDic = new Dictionary<string, string>();
-                                    foreach (var li in baseInfoLiNodes)
+                                    for (int i = 0; i < 8; i++)
                                     {
-                                        var keyNode = li.SelectSingleNode(".//div[1]");
-                                        var valueNode = li.SelectSingleNode(".//div[2]");
+                                        var keyNode = baseInfoLiNodes?[i].SelectSingleNode(".//div[1]");
+                                        var valueNode = baseInfoLiNodes?[i].SelectSingleNode(".//div[2]");
                                         if (keyNode is null)
                                             break;
-                                        baseInfoDic.Add(keyNode.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "").Replace("：",""),
+                                        baseInfoDic.Add(keyNode.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "").Replace("：", ""),
                                             valueNode.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", ""));
                                     }
+                                    house.BaseInfoJson = JsonConvert.SerializeObject(baseInfoDic);
 
-                                    var PreSaleTable = detailDoc.DocumentNode.SelectNodes("//div[@class=\"table-all\"][1]/table");
-                                    var perSaleTrs = PreSaleTable?.FirstOrDefault()?.SelectNodes(".//tr");
+                                    //销售信息
+                                    var saleInfoNode = detailDoc.DocumentNode.SelectNodes("//div[@class=\"main-item\"]")?[1];
+                                    var saleInfoLiNodes = saleInfoNode?.SelectNodes(".//ul/li");
+                                    var saleInfoDic = new Dictionary<string, string>();
+                                    for (int i = 0; i < (saleInfoLiNodes?.Count ?? 0) - 1; i++)
+                                    {
+                                        var keyNode = saleInfoLiNodes?[i].SelectSingleNode(".//div[1]");
+                                        var valueNode = saleInfoLiNodes?[i].SelectSingleNode(".//div[2]");
+                                        if (keyNode is null)
+                                            break;
+                                        saleInfoDic.Add(keyNode.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "").Replace("：", ""),
+                                            valueNode.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", ""));
+                                    }
+                                    house.SaseInfoJson = JsonConvert.SerializeObject(saleInfoDic);
+
+
+                                    // 预售信息
+                                    var preSaleTables = saleInfoNode?.SelectNodes(".//table");
+                                    var perSaleTrs = preSaleTables?.LastOrDefault()?.SelectNodes(".//tr");
                                     var perSaleList = new List<PerSaleInfo>();
-                                    for (int i = 1; i < perSaleTrs.Count; i++) {
+                                    for (int i = 1; i < perSaleTrs.Count; i++)
+                                    {
                                         var perSaleInfo = new PerSaleInfo();
                                         perSaleInfo.License = perSaleTrs[i].SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
                                         perSaleInfo.IssueDate = perSaleTrs[i].SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText;
                                         perSaleInfo.BindBuilding = perSaleTrs[i].SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText;
                                         perSaleList.Add(perSaleInfo);
                                     }
-                                    house.PerSales = perSaleList;
+                                    house.PerSaleList = perSaleList;
 
-                                    house.BaseInfoJson = JsonConvert.SerializeObject(baseInfoDic);
+                                    // 价格信息
+
+                                    var priceTable = detailDoc.DocumentNode.SelectNodes("//div[@class=\"main-item\"]")?[4]?.SelectNodes(".//table");
+                                    var priceTrs = priceTable?.LastOrDefault()?.SelectNodes(".//tr");
+                                    var priceList = new List<PriceInfo>();
+                                    foreach (var tr in priceTrs)
+                                    {
+                                        var priceInfo = new PriceInfo();
+                                        priceInfo.RecordDate = tr.SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
+                                        priceInfo.AvgPrice = tr.SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;","");
+                                        priceInfo.StartingPrice = tr.SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;", "");
+                                        priceInfo.PriceDescription = tr.SelectNodes(".//td[4]")?.FirstOrDefault()?.InnerText;
+                                        priceList.Add(priceInfo);
+                                    }
+                                    house.PriceList = priceList;
+
+
                                 }
 
                             }

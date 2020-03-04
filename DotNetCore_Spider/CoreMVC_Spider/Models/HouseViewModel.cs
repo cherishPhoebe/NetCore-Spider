@@ -24,7 +24,10 @@ namespace CoreMVC_Spider.Models
 
         public string BaseInfoJson { get; set; }
 
-        public List<PerSaleInfo> PerSales { get; set; }
+        public List<PerSaleInfo> PerSaleList { get; set; }
+
+        public List<PriceInfo> PriceList { get; set; }
+        public string SaseInfoJson { get; internal set; }
     }
 
     public class PerSaleInfo {
@@ -34,4 +37,15 @@ namespace CoreMVC_Spider.Models
 
         public string BindBuilding { get; set; }
     }
+
+    public class PriceInfo {
+        public string RecordDate { get; set; }
+
+        public string AvgPrice { get; set; }
+
+        public string StartingPrice { get; set; }
+
+        public string PriceDescription { get; set; }
+    }
+
 }
