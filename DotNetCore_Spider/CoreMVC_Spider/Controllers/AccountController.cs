@@ -36,8 +36,8 @@ namespace CoreMVC_Spider.Controllers
 
         // POST: Account/Create
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public ActionResult Login([FromBody]LoginViewModel loginInfo)
+        [ValidateAntiForgeryToken]
+        public ActionResult Login([FromForm]LoginViewModel loginInfo)
         {
             try
             {
