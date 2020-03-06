@@ -1,4 +1,5 @@
-﻿@model CoreMVC_Spider.Models.Account.LoginViewModel
+﻿@using CoreMVC_Spider.Models.Account
+@model LoginViewModel
 
 @{
     Layout = null;
@@ -32,35 +33,26 @@
         <div class="card">
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
-                <form action="Login" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <form asp-controller="Account" asp-action="Login" method="post">
                     <div class="input-group mb-3">
-                        <input type="UserName" class="form-control" placeholder="用户名">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
-                            </div>
-                        </div>
+                        <input asp-for="UserName" type="text" class="form-control" placeholder="用户名">
+                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                        <span asp-validation-for="UserName" class="text-danger"></span>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="Password" class="form-control" placeholder="密码">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
-                            </div>
-                        </div>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="密码">
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                     </div>
                     <div class="row">
                         <div class="col-8">
                             <div class="icheck-primary">
-                                <input type="checkbox" id="remember">
-                                <label for="remember">
-                                    记住我
-                                </label>
+                                <input asp-for="RememberMe" type="checkbox"> 记住我
                             </div>
                         </div>
                         <!-- /.col -->
                         <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-block">登录</button>
+                            <button type="submit" class="btn btn-primary btn-block btn-flat">登录</button>
                         </div>
                         <!-- /.col -->
                     </div>

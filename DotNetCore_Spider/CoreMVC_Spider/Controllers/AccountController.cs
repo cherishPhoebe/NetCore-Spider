@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using ZY.Utility.Convert;
 
 namespace CoreMVC_Spider.Controllers
 {
@@ -34,7 +35,6 @@ namespace CoreMVC_Spider.Controllers
             return View();
         }
 
-        // POST: Account/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Login([FromForm]LoginViewModel loginInfo)
@@ -44,6 +44,7 @@ namespace CoreMVC_Spider.Controllers
                 // TODO: Add insert logic here
                 if (loginInfo.UserName == "admin" && loginInfo.Password == "123456")
                 {
+                    HttpContext.Session.Set("CurrentUser", ByteConvertHelper.Object2Bytes(loginInfo));
                     return RedirectToAction(nameof(Index), "Home");
                 }
                 else

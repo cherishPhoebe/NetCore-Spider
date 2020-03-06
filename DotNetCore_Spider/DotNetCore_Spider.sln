@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetCore_Spider", "DotNet
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreMVC_Spider", "CoreMVC_Spider\CoreMVC_Spider.csproj", "{CDB67879-6541-4E92-8E75-1AA70B2BB309}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZY.Domain", "ZY.Domain\ZY.Domain.csproj", "{00DE5D65-08D4-4A3A-8733-0366EB4763C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZY.Domain", "ZY.Domain\ZY.Domain.csproj", "{00DE5D65-08D4-4A3A-8733-0366EB4763C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZY.EFCore", "EFCore\ZY.EFCore.csproj", "{F9A52CC2-4764-4F94-89BF-B453F3D1182C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZY.EFCore", "EFCore\ZY.EFCore.csproj", "{F9A52CC2-4764-4F94-89BF-B453F3D1182C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZY.Utility", "ZY.Utility\ZY.Utility.csproj", "{0647939E-2E56-49A8-952D-0BBFB3D931C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{F9A52CC2-4764-4F94-89BF-B453F3D1182C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9A52CC2-4764-4F94-89BF-B453F3D1182C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9A52CC2-4764-4F94-89BF-B453F3D1182C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0647939E-2E56-49A8-952D-0BBFB3D931C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0647939E-2E56-49A8-952D-0BBFB3D931C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0647939E-2E56-49A8-952D-0BBFB3D931C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0647939E-2E56-49A8-952D-0BBFB3D931C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

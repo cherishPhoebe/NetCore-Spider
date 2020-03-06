@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EFCore\ZY.EFCore.csproj" />
+    <ProjectReference Include="..\ZY.Utility\ZY.Utility.csproj" />
   </ItemGroup>
 
 
