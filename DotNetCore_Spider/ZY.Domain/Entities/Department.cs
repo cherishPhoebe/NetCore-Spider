@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ZY.Domain.Entities
 {
@@ -54,11 +52,6 @@ namespace ZY.Domain.Entities
         /// 是否已删除
         /// </summary>
         public int IsDeleted { get; set; }
-        
 
-        /// <summary>
-        /// 创建人信息
-        /// </summary>
-        public virtual User CreateUser { get; set; }
     }
 }

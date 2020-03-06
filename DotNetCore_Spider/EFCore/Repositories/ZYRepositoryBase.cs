@@ -200,7 +200,7 @@ namespace ZY.EFCore.Repositories
     /// <typeparam name="TEntity">实体类型</typeparam>
     public abstract class ZYRepositoryBase<TEntity> : ZYRepositoryBase<TEntity, Guid> where TEntity : Entity
     {
-        public FonourRepositoryBase(ZYContext dbContext) : base(dbContext)
+        public ZYRepositoryBase(ZYContext dbContext) : base(dbContext)
         {
         }
     }
