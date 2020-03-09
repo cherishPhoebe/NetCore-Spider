@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
+using ZY.Application.UserApp;
 using ZY.Utility.Convert;
 
 namespace CoreMVC_Spider.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly UserAppService _userAppService;
         private readonly ILogger<AccountController> _logger;
 
         public AccountController(ILogger<AccountController> logger)
@@ -39,24 +42,31 @@ namespace CoreMVC_Spider.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login([FromForm]LoginViewModel loginInfo)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
-                if (loginInfo.UserName == "admin" && loginInfo.Password == "123456")
+                try
                 {
-                    HttpContext.Session.Set("CurrentUser", ByteConvertHelper.Object2Bytes(loginInfo));
-                    return RedirectToAction(nameof(Index), "Home");
+                    var user = _userAppService.CheckUser(loginInfo.UserName, loginInfo.Password);
+                    if (user != null)
+                    {
+                        //记录Session
+                        HttpContext.Session.Set("CurrentUser", ByteConvertHelper.Object2Bytes(user));
+                        return RedirectToAction(nameof(Index), "Home");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "用户名或密码错误。");
+                        return View();
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
+                    _logger.LogError(ex, "登录失败", loginInfo);
                     return View();
                 }
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "登录失败", loginInfo);
-                return View();
-            }
+            ViewBag.ErrorInfo = ModelState.Values.First().Errors[0].ErrorMessage;
+            return View(loginInfo);
         }
 
         // GET: Account/Edit/5
