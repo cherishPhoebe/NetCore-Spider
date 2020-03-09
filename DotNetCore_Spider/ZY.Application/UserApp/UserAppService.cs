@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using ZY.Application.UserApp.Dtos;
 using ZY.Domain.Entities;
 using ZY.Domain.IRepositories;
@@ -15,14 +14,16 @@ namespace ZY.Application.UserApp
     {
         //用户管理仓储接口
         private readonly IUserRepository _repository;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// 构造函数 实现依赖注入
         /// </summary>
         /// <param name="userRepository">仓储对象</param>
-        public UserAppService(IUserRepository userRepository)
+        public UserAppService(IUserRepository userRepository, IMapper mapper)
         {
             _repository = userRepository;
+            _mapper = mapper;
         }
 
         public User CheckUser(string userName, string password)
@@ -31,7 +32,7 @@ namespace ZY.Application.UserApp
         }
         public List<UserDto> GetUserByDepartment(Guid departmentId, int startPage, int pageSize, out int rowCount)
         {
-            return Mapper.Map<List<UserDto>>(_repository.LoadPageList(startPage, pageSize, out rowCount, it => it.DepartmentId == departmentId, it => it.CreateTime));
+            return _mapper.Map<List<UserDto>>(_repository.LoadPageList(startPage, pageSize, out rowCount, it => it.DepartmentId == departmentId, it => it.CreateTime));
         }
 
         /// <summary>
@@ -43,8 +44,8 @@ namespace ZY.Application.UserApp
         {
             if (Get(dto.Id) != null)
                 _repository.Delete(dto.Id);
-            var user = _repository.InsertOrUpdate(Mapper.Map<User>(dto));
-            return Mapper.Map<UserDto>(user);
+            var user = _repository.InsertOrUpdate(_mapper.Map<User>(dto));
+            return _mapper.Map<UserDto>(user);
         }
         /// <summary>
         /// 根据Id集合批量删除
@@ -71,7 +72,7 @@ namespace ZY.Application.UserApp
         /// <returns></returns>
         public UserDto Get(Guid id)
         {
-            return Mapper.Map<UserDto>(_repository.GetWithRoles(id));
+            return _mapper.Map<UserDto>(_repository.GetWithRoles(id));
         }
     }
 }

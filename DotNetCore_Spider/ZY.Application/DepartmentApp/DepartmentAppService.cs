@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ZY.Application.DepartmentApp.Dtos;
 using ZY.Domain.Entities;
 using ZY.Domain.IRepositories;
@@ -12,9 +11,11 @@ namespace ZY.Application.DepartmentApp
     public class DepartmentAppService : IDepartmentAppService
     {
         private readonly IDepartmentRepository _repository;
-        public DepartmentAppService(IDepartmentRepository repository)
+        private readonly IMapper _mapper;
+        public DepartmentAppService(IDepartmentRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
         /// <summary>
         /// 获取列表
@@ -22,7 +23,7 @@ namespace ZY.Application.DepartmentApp
         /// <returns></returns>
         public List<DepartmentDto> GetAllList()
         {
-            return Mapper.Map<List<DepartmentDto>>(_repository.GetAllList(it => it.Id != Guid.Empty).OrderBy(it => it.Code));
+            return _mapper.Map<List<DepartmentDto>>(_repository.GetAllList(it => it.Id != Guid.Empty).OrderBy(it => it.Code));
         }
 
         /// <summary>
@@ -35,7 +36,7 @@ namespace ZY.Application.DepartmentApp
         /// <returns></returns>
         public List<DepartmentDto> GetChildrenByParent(Guid parentId, int startPage, int pageSize, out int rowCount)
         {
-            return Mapper.Map<List<DepartmentDto>>(_repository.LoadPageList(startPage, pageSize, out rowCount, it => it.ParentId == parentId, it => it.Code));
+            return _mapper.Map<List<DepartmentDto>>(_repository.LoadPageList(startPage, pageSize, out rowCount, it => it.ParentId == parentId, it => it.Code));
         }
 
         /// <summary>
@@ -45,7 +46,7 @@ namespace ZY.Application.DepartmentApp
         /// <returns></returns>
         public bool InsertOrUpdate(DepartmentDto dto)
         {
-            var menu = _repository.InsertOrUpdate(Mapper.Map<Department>(dto));
+            var menu = _repository.InsertOrUpdate(_mapper.Map<Department>(dto));
             return menu == null ? false : true;
         }
 
@@ -74,7 +75,7 @@ namespace ZY.Application.DepartmentApp
         /// <returns></returns>
         public DepartmentDto Get(Guid id)
         {
-            return Mapper.Map<DepartmentDto>(_repository.Get(id));
+            return _mapper.Map<DepartmentDto>(_repository.Get(id));
         }
     }
 }

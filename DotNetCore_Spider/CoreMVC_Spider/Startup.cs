@@ -8,7 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Text;
+using ZY.Application.AutoMapper.Profiles;
 using ZY.EFCore;
+using AutoMapper;
 
 namespace CoreMVC_Spider
 {
@@ -43,6 +45,8 @@ namespace CoreMVC_Spider
 
             services.AddDbContext<ZYContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddAutoMapper(MapperRegister.MapType());
 
             services.AddSession();
 

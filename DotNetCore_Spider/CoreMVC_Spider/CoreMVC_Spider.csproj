@@ -8,6 +8,8 @@
 
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="HtmlAgilityPack.NetCore" Version="1.5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
@@ -19,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EFCore\ZY.EFCore.csproj" />
+    <ProjectReference Include="..\ZY.Application\ZY.Application.csproj" />
     <ProjectReference Include="..\ZY.Utility\ZY.Utility.csproj" />
   </ItemGroup>
 
