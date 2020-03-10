@@ -33,7 +33,7 @@ namespace ZY.EFCore
                      UserName = "admin",
                      Password = "123456", //暂不进行加密
                      Name = "超级管理员",
-                     DeptmentId = departmentId
+                     DepartmentId = departmentId
                  }
             );
             //增加四个基本功能菜单

@@ -11,11 +11,12 @@ namespace CoreMVC_Spider.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserAppService _userAppService;
+        private readonly IUserAppService _userAppService;
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(ILogger<AccountController> logger)
+        public AccountController(IUserAppService userAppService, ILogger<AccountController> logger)
         {
+            _userAppService = userAppService;
             _logger = logger;
         }
 

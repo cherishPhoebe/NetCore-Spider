@@ -11,7 +11,7 @@ namespace CoreMVC_Spider.Controllers
             filterContext.HttpContext.Session.TryGetValue("CurrentUser", out result);
             if (result == null)
             {
-                filterContext.Result = new RedirectResult("/Login/Index");
+                filterContext.Result = new RedirectResult("/Account/Login");
                 return;
             }
             base.OnActionExecuting(filterContext);

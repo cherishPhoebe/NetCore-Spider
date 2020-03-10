@@ -11,6 +11,12 @@ using System.Text;
 using ZY.Application.AutoMapper.Profiles;
 using ZY.EFCore;
 using AutoMapper;
+using ZY.Domain.IRepositories;
+using ZY.EFCore.Repositories;
+using ZY.Application.UserApp;
+using ZY.Application.MenuApp;
+using ZY.Application.DepartmentApp;
+using ZY.Application.RoleApp;
 
 namespace CoreMVC_Spider
 {
@@ -47,6 +53,16 @@ namespace CoreMVC_Spider
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddAutoMapper(MapperRegister.MapType());
+
+            // 依赖注入服务
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserAppService, UserAppService>();
+            services.AddScoped<IMenuRepository, MenuRepository>();
+            services.AddScoped<IMenuAppService, MenuAppService>();
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<IDepartmentAppService, DepartmentAppService>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IRoleAppService, RoleAppService>();
 
             services.AddSession();
 

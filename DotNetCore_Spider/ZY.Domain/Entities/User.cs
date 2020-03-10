@@ -59,7 +59,7 @@ namespace ZY.Domain.Entities
         /// <summary>
         /// 部门ID
         /// </summary>
-        public Guid DeptmentId { get; set; }
+        public Guid DepartmentId { get; set; }
 
         /// <summary>
         /// 是否已删除
@@ -70,13 +70,12 @@ namespace ZY.Domain.Entities
         /// 所属部门实体
         /// </summary>
         public virtual Department Department { get; set; }
-
+        
         /// <summary>
         /// 角色集合
         /// </summary>
 
         public virtual ICollection<Role> Roles { get; set; }
-        public Guid DepartmentId { get; set; }
         public List<UserRole> UserRoles { get; set; }
     }
 }
