@@ -11,6 +11,7 @@ namespace ZY.Application.AutoMapper.Profiles
     {
         public AuthorityProfile()
         {
+            //CreateMap<Post, PostResource>().ForMember(dest => dest.UpdateTime, opt => opt.MapFrom(src => src.LastModified));
             CreateMap<Menu, MenuDto>();
             CreateMap<MenuDto, Menu>();
             CreateMap<Department, DepartmentDto>();
