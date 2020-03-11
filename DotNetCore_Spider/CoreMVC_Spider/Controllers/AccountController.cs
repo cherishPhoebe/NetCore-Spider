@@ -40,8 +40,8 @@ namespace CoreMVC_Spider.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Login([FromForm]LoginViewModel loginInfo)
+        //[ValidateAntiForgeryToken]
+        public ActionResult Login(LoginViewModel loginInfo)
         {
             if (ModelState.IsValid)
             {
@@ -101,7 +101,6 @@ namespace CoreMVC_Spider.Controllers
 
         // POST: Account/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {
             try
