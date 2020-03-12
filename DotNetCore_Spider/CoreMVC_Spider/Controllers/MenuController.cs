@@ -8,7 +8,7 @@ using ZY.Application.UserApp;
 
 namespace CoreMVC_Spider.Controllers
 {
-    public class MenuController : BaseController
+    public class MenuController : Controller
     {
         private readonly IMenuAppService _menuAppService;
         public MenuController(IMenuAppService menuAppService, IUserAppService userAppService)
@@ -63,7 +63,7 @@ namespace CoreMVC_Spider.Controllers
                 return Json(new
                 {
                     Result = "Faild",
-                    Message = GetModelStateError()
+                    Message = "" //GetModelStateError()
                 });
             }
             if (_menuAppService.InsertOrUpdate(dto))

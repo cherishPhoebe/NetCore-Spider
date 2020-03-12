@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CoreMVC_Spider.Controllers
 {
-    public class HomeController : BaseController
+    public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
