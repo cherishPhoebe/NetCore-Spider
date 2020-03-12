@@ -32,4 +32,10 @@
     </Content>
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Include="wwwroot\js\department\Index.js" />
+    <None Include="wwwroot\js\user\Index.js" />
+  </ItemGroup>
+
 </Project>
