@@ -9,7 +9,7 @@ using ZY.Application.UserApp.Dtos;
 
 namespace CoreMVC_Spider.Controllers
 {
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly IUserAppService _userService;
         private readonly IRoleAppService _roleService;

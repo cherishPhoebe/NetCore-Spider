@@ -35,7 +35,7 @@ namespace ZY.EFCore.Repositories
             var user = _dbContext.Set<User>().FirstOrDefault(it => it.Id == id);
             if (user != null)
             {
-                //user.UserRoles = _dbContext.Set<UserRole>().Where(it => it.UserId == id).ToList();
+                user.UserRoles = _dbContext.Set<UserRole>().Where(it => it.UserId == id).ToList();
             }
             return user;
         }

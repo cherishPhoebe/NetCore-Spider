@@ -51,6 +51,7 @@ namespace CoreMVC_Spider.Controllers
                     if (user != null)
                     {
                         //记录Session
+                        HttpContext.Session.SetString("CurrentUserId", user.Id.ToString());
                         HttpContext.Session.Set("CurrentUser", ByteConvertHelper.Object2Bytes(user));
                         return RedirectToAction(nameof(Index), "Home");
                     }

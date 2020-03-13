@@ -7,14 +7,14 @@ using ZY.Application.RoleApp.Dtos;
 
 namespace CoreMVC_Spider.Controllers
 {
-    public class RoleController : Controller
+    public class RoleController : BaseController
     {
-        private readonly IRoleAppService _service;
+        private readonly IRoleAppService _roleService;
         private readonly ILogger<RoleController> _logger;
-        public RoleController(IRoleAppService service, ILogger<RoleController> logger)
+        public RoleController(IRoleAppService roleService, ILogger<RoleController> logger)
         {
             _logger = logger;
-            _service = service;
+            _roleService = roleService;
         }
         // GET: /<controller>/
         public IActionResult Index()
@@ -40,7 +40,7 @@ namespace CoreMVC_Spider.Controllers
             if (dto.Id == Guid.Empty)
                 dto.CreateTime = DateTime.Now;
             //dto.CreateUserId = 
-            if (_service.InsertOrUpdate(dto))
+            if (_roleService.InsertOrUpdate(dto))
             {
                 return Json(new { Result = "Success" });
             }
@@ -50,7 +50,7 @@ namespace CoreMVC_Spider.Controllers
         public IActionResult GetAllPageList(int startPage, int pageSize)
         {
             int rowCount = 0;
-            var result = _service.GetAllPageList(startPage, pageSize, out rowCount);
+            var result = _roleService.GetAllPageList(startPage, pageSize, out rowCount);
             return Json(new
             {
                 rowCount = rowCount,
@@ -68,7 +68,7 @@ namespace CoreMVC_Spider.Controllers
                 {
                     delIds.Add(Guid.Parse(id));
                 }
-                _service.DeleteBatch(delIds);
+                _roleService.DeleteBatch(delIds);
                 return Json(new
                 {
                     Result = "Success"
@@ -87,7 +87,7 @@ namespace CoreMVC_Spider.Controllers
         {
             try
             {
-                _service.Delete(id);
+                _roleService.Delete(id);
                 return Json(new
                 {
                     Result = "Success"
@@ -104,7 +104,7 @@ namespace CoreMVC_Spider.Controllers
         }
         public IActionResult Get(Guid id)
         {
-            var dto = _service.Get(id);
+            var dto = _roleService.Get(id);
             return Json(dto);
         }
 
@@ -114,13 +114,13 @@ namespace CoreMVC_Spider.Controllers
         /// <returns></returns>
         public IActionResult GetMenusByRole(Guid roleId)
         {
-            var dtos = _service.GetAllMenuListByRole(roleId);
+            var dtos = _roleService.GetAllMenuListByRole(roleId);
             return Json(dtos);
         }
 
         public IActionResult SavePermission(Guid roleId, List<RoleMenuDto> roleMenus)
         {
-            if (_service.UpdateRoleMenu(roleId, roleMenus))
+            if (_roleService.UpdateRoleMenu(roleId, roleMenus))
             {
                 return Json(new { Result = "Success" });
             }

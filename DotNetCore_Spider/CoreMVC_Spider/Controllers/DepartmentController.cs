@@ -8,7 +8,7 @@ using ZY.Application.DepartmentApp.Dtos;
 
 namespace CoreMVC_Spider.Controllers
 {
-    public class DepartmentController : Controller
+    public class DepartmentController : BaseController
     {
         private readonly IDepartmentAppService _service;
         private readonly ILogger<DepartmentController> _logger;

@@ -8,7 +8,7 @@ using ZY.Application.UserApp;
 
 namespace CoreMVC_Spider.Controllers
 {
-    public class MenuController : Controller
+    public class MenuController : BaseController
     {
         private readonly IMenuAppService _menuAppService;
         public MenuController(IMenuAppService menuAppService, IUserAppService userAppService)

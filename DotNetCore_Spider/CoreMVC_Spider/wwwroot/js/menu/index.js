@@ -79,11 +79,10 @@ function loadTables(startPage, pageSize) {
 function checkAll(obj) {
     $(".checkboxs").each(function () {
         if (obj.checked == true) {
-            $(this).prop("checked", true)
-
+            $(this).prop("checked", true);
         }
         if (obj.checked == false) {
-            $(this).prop("checked", false)
+            $(this).prop("checked", false);
         }
     });
 };
@@ -140,7 +139,6 @@ function save() {
         url: "/Menu/Edit",
         data: postData,
         success: function (data) {
-            debugger
             if (data.result == "Success") {
                 initTree();
                 $("#addRootModal").modal("hide");

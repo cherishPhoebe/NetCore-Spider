@@ -1,0 +1,7 @@
+﻿@using ZY.Application.MenuApp.Dtos
+@model List<MenuDto>
+@foreach (var menu in Model)
+{
+    var isActive = ViewBag.CurrentMenu == menu.Code; //判断当前功能是否处于激活
+    <li class="nav-item @(isActive ? "active" : "")"><a href="@menu.Url" class="nav-link"><i class="fa fa-link"></i> <p>@menu.Name</p></a></li>
+}
