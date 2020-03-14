@@ -17,6 +17,9 @@ using ZY.Application.UserApp;
 using ZY.Application.MenuApp;
 using ZY.Application.DepartmentApp;
 using ZY.Application.RoleApp;
+using Hangfire;
+using Hangfire.SqlServer;
+using System;
 
 namespace CoreMVC_Spider
 {
@@ -66,6 +69,24 @@ namespace CoreMVC_Spider
 
             services.AddSession();
 
+            // Add Hangfire services.
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnection"), new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    UsePageLocksOnDequeue = true,
+                    DisableGlobalLocks = true
+                }));
+
+            // Add the processing server as IHostedService
+            services.AddHangfireServer();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -87,6 +108,10 @@ namespace CoreMVC_Spider
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseSession();
+
+            app.UseHangfireDashboard();
+            BackgroundJob.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
+
 
             app.UseMvc(routes =>
             {
