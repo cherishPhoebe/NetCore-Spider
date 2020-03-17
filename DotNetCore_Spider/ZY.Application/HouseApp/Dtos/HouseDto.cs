@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace ZY.Domain.Entities
+namespace ZY.Application.HouseApp.Dtos
 {
-    public class House : Entity
+    public class HouseDto
     {
-        public string HouseKey { get; set; }
-
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Url { get; set; }
 
@@ -21,15 +21,17 @@ namespace ZY.Domain.Entities
         public string RoomType { get; set; }
 
         public string BuildingType { get; set; }
-        public string Point { get;  set; }
+
+        public string Point { get; internal set; }
 
         public string BaseInfoJson { get; set; }
 
-        public List<PerSaleInfo> PerSaleList { get; set; }
+        public List<PerSaleInfoDto> PerSaleList { get; set; }
 
-        public List<PriceInfo> PriceList { get; set; }
+        public List<PriceInfoDto> PriceList { get; set; }
 
-        public string SaseInfoJson { get;  set; }
+        public string SaseInfoJson { get; internal set; }
+
         public DateTime AddTime { get; set; }
         public DateTime UpdateTime { get; set; }
     }

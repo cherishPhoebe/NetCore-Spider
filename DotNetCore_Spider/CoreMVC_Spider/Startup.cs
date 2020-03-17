@@ -61,7 +61,7 @@ namespace CoreMVC_Spider
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserAppService, UserAppService>();
             services.AddScoped<IMenuRepository, MenuRepository>();
-            services.AddScoped<IMenuAppService, MenuAppService>();
+            services.AddScoped<IHouseAppService, HouseAppService>();
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             services.AddScoped<IDepartmentAppService, DepartmentAppService>();
             services.AddScoped<IRoleRepository, RoleRepository>();
