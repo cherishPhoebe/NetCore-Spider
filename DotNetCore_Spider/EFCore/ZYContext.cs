@@ -16,6 +16,10 @@ namespace ZY.EFCore
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<RoleMenu> RoleMenus { get; set; }
 
+        public DbSet<House> Houses { get; set; }
+        public DbSet<PerSaleInfo> PerSaleInfos { get; set; }
+        public DbSet<PriceInfo> PriceInfos { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -27,8 +31,6 @@ namespace ZY.EFCore
             builder.Entity<RoleMenu>()
               .HasKey(rm => new { rm.RoleId, rm.MenuId });
 
-            //启用Guid主键类型扩展
-            //builder.HasPostgresExtension("uuid-ossp");
 
             base.OnModelCreating(builder);
         }
