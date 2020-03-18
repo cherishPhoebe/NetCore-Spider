@@ -63,7 +63,7 @@ namespace CoreMVC_Spider.Controllers
                 return Json(new
                 {
                     Result = "Faild",
-                    Message = "" //GetModelStateError()
+                    Message = GetModelStateError()
                 });
             }
             if (_menuAppService.InsertOrUpdate(dto))

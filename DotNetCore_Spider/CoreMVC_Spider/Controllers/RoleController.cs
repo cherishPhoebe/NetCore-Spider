@@ -34,12 +34,12 @@ namespace CoreMVC_Spider.Controllers
                 return Json(new
                 {
                     Result = "Faild",
-                    Message = "" //GetModelStateError()
+                    Message = GetModelStateError()
                 });
             }
             if (dto.Id == Guid.Empty)
                 dto.CreateTime = DateTime.Now;
-            //dto.CreateUserId = 
+
             if (_roleService.InsertOrUpdate(dto))
             {
                 return Json(new { Result = "Success" });
