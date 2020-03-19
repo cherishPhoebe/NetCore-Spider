@@ -7,6 +7,8 @@ namespace ZY.Application.HouseApp.Dtos
     public class HouseDto
     {
         public Guid Id { get; set; }
+        public string HouseKey { get; set; }
+
         public string Name { get; set; }
         public string Url { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ZY.Application.HouseApp.Dtos;
 
 namespace ZY.Application.MenuApp
@@ -37,6 +38,8 @@ namespace ZY.Application.MenuApp
         /// <param name="id">功能Id</param>
         /// <returns></returns>
         HouseDto Get(Guid id);
-        
+
+        Task<List<HouseDto>> GetHouseData();
+
     }
 }
