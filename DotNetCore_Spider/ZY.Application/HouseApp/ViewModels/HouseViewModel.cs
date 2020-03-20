@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CoreMVC_Spider.Models
+namespace ZY.Application.HouseApp.ViewModel
 {
     public class HouseViewModel
     {
@@ -20,17 +20,17 @@ namespace CoreMVC_Spider.Models
         public string RoomType { get; set; }
 
         public string BuildingType { get; set; }
-        public string Point { get; internal set; }
+        public string Point { get;  set; }
 
         public string BaseInfoJson { get; set; }
 
-        public List<PerSaleInfo> PerSaleList { get; set; }
+        public List<PerSaleInfoViewModel> PerSaleList { get; set; }
 
-        public List<PriceInfo> PriceList { get; set; }
-        public string SaseInfoJson { get; internal set; }
+        public List<PriceInfoViewModel> PriceList { get; set; }
+        public string SaseInfoJson { get;  set; }
     }
 
-    public class PerSaleInfo {
+    public class PerSaleInfoViewModel {
         public string License { get; set; }
 
         public string IssueDate { get; set; }
@@ -38,7 +38,7 @@ namespace CoreMVC_Spider.Models
         public string BindBuilding { get; set; }
     }
 
-    public class PriceInfo {
+    public class PriceInfoViewModel {
         public string RecordDate { get; set; }
 
         public string AvgPrice { get; set; }

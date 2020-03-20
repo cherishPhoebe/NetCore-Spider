@@ -14,12 +14,13 @@ using AutoMapper;
 using ZY.Domain.IRepositories;
 using ZY.EFCore.Repositories;
 using ZY.Application.UserApp;
-using ZY.Application.MenuApp;
+using ZY.Application.HouseApp;
 using ZY.Application.DepartmentApp;
 using ZY.Application.RoleApp;
 using Hangfire;
 using Hangfire.SqlServer;
 using System;
+using ZY.Application.MenuApp;
 
 namespace CoreMVC_Spider
 {
@@ -61,6 +62,8 @@ namespace CoreMVC_Spider
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserAppService, UserAppService>();
             services.AddScoped<IMenuRepository, MenuRepository>();
+            services.AddScoped<IMenuAppService, MenuAppService>();
+            services.AddScoped<IHouseRepository, HouseRepository>();
             services.AddScoped<IHouseAppService, HouseAppService>();
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             services.AddScoped<IDepartmentAppService, DepartmentAppService>();

@@ -1,31 +1,35 @@
-﻿using CoreMVC_Spider.Models;
-using HtmlAgilityPack;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using ZY.Application.HouseApp;
+using ZY.Application.HouseApp.ViewModel;
 
 namespace CoreMVC_Spider.Controllers
 {
     public class HouseController : BaseController
     {
+        private readonly IHouseAppService _houseAppService;
         private readonly ILogger<HouseController> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IMapper _mapper;
 
-        public HouseController(ILogger<HouseController> logger, IHttpClientFactory httpClientFactory)
+        public HouseController(IHouseAppService houseAppService, ILogger<HouseController> logger, IHttpClientFactory httpClientFactory, IMapper mapper)
         {
+            _houseAppService = houseAppService;
             _logger = logger;
+            _mapper = mapper;
             _httpClientFactory = httpClientFactory;
         }
 
         // GET: House
-        public ActionResult Index()
+        public async Task<ActionResult> IndexAsync()
         {
-            List<HouseViewModel> modelList = new List<HouseViewModel>();
-            return View(modelList);
+            var houseDtoList = await _houseAppService.GetHouseData();
+            return View(houseDtoList);
         }
 
         // GET: House/Details/5
@@ -37,29 +41,7 @@ namespace CoreMVC_Spider.Controllers
         // GET: House/Create
         public async Task<ActionResult> Create()
         {
-            // 抓取https://cs.newhouse.fang.com/house/s/b91/ 楼盘数据
-            var html = @"https://cs.newhouse.fang.com/house/s/b91/";
-
-
-            HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-            client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
-
-            using (var response = await client.GetAsync(html))
-            {
-                using (var content = response.Content)
-                {
-                    // read answer in non-blocking way
-                    var result = await content.ReadAsStringAsync();
-                    var document = new HtmlDocument();
-                    document.LoadHtml(result);
-                    var nodes = document.DocumentNode.SelectNodes("//*[@id='newhouse_loupai_list']/ul");
-                    _logger.LogInformation(nodes.FirstOrDefault().InnerHtml);
-                }
-            }
-
-
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(IndexAsync));
         }
 
         // POST: House/Create
@@ -71,7 +53,7 @@ namespace CoreMVC_Spider.Controllers
             {
                 // TODO: Add insert logic here
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(IndexAsync));
             }
             catch
             {
@@ -94,7 +76,7 @@ namespace CoreMVC_Spider.Controllers
             {
                 // TODO: Add update logic here
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(IndexAsync));
             }
             catch
             {
@@ -117,7 +99,7 @@ namespace CoreMVC_Spider.Controllers
             {
                 // TODO: Add delete logic here
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(IndexAsync));
             }
             catch
             {

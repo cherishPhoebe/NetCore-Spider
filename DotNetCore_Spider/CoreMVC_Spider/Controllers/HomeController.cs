@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using ZY.Application.HouseApp.ViewModel;
 
 namespace CoreMVC_Spider.Controllers
 {
@@ -159,10 +160,10 @@ namespace CoreMVC_Spider.Controllers
                                     // 预售信息
                                     var preSaleTables = saleInfoNode?.SelectNodes(".//table");
                                     var perSaleTrs = preSaleTables?.LastOrDefault()?.SelectNodes(".//tr");
-                                    var perSaleList = new List<PerSaleInfo>();
+                                    var perSaleList = new List<PerSaleInfoViewModel>();
                                     for (int i = 1; i < perSaleTrs.Count; i++)
                                     {
-                                        var perSaleInfo = new PerSaleInfo();
+                                        var perSaleInfo = new PerSaleInfoViewModel();
                                         perSaleInfo.License = perSaleTrs[i].SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
                                         perSaleInfo.IssueDate = perSaleTrs[i].SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText;
                                         perSaleInfo.BindBuilding = perSaleTrs[i].SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText;
@@ -174,10 +175,10 @@ namespace CoreMVC_Spider.Controllers
 
                                     var priceTable = detailDoc.DocumentNode.SelectNodes("//div[@class=\"main-item\"]")?[4]?.SelectNodes(".//table");
                                     var priceTrs = priceTable?.LastOrDefault()?.SelectNodes(".//tr");
-                                    var priceList = new List<PriceInfo>();
+                                    var priceList = new List<PriceInfoViewModel>();
                                     foreach (var tr in priceTrs)
                                     {
-                                        var priceInfo = new PriceInfo();
+                                        var priceInfo = new PriceInfoViewModel();
                                         priceInfo.RecordDate = tr.SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
                                         priceInfo.AvgPrice = tr.SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;", "");
                                         priceInfo.StartingPrice = tr.SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;", "");

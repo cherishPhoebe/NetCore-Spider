@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
-using ZY.Application.DepartmentApp.Dtos;
 using ZY.Application.HouseApp.Dtos;
-using ZY.Application.MenuApp.Dtos;
-using ZY.Application.RoleApp.Dtos;
-using ZY.Application.UserApp.Dtos;
+using ZY.Application.HouseApp.ViewModel;
 using ZY.Domain.Entities;
 
 namespace ZY.Application.AutoMapper.Profiles
@@ -19,6 +16,13 @@ namespace ZY.Application.AutoMapper.Profiles
             CreateMap<PerSaleInfoDto, PerSaleInfo>();
             CreateMap<PriceInfo, PriceInfoDto>();
             CreateMap<PriceInfoDto, PriceInfo>();
+
+            CreateMap<HouseDto, HouseViewModel>();
+            CreateMap<HouseViewModel, HouseDto>();
+            CreateMap<PerSaleInfoDto, PerSaleInfoViewModel>();
+            CreateMap<PerSaleInfoViewModel, PerSaleInfoDto>();
+            CreateMap<PriceInfoDto, PriceInfoViewModel>();
+            CreateMap<PriceInfoViewModel, PriceInfoDto>();
 
         }
     }

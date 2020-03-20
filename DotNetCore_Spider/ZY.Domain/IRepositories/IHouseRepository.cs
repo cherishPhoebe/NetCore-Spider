@@ -8,6 +8,8 @@ namespace ZY.Domain.IRepositories
     /// </summary>
     public interface IHouseRepository : IRepository<House>
     {
+        House Get(string houseKey);
 
+        House InsertOrUpdateByHouseKey(House house,bool autoSave = true);
     }
 }
