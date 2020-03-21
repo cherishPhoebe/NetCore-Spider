@@ -2,11 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ZY.Application.HouseApp;
-using ZY.Application.HouseApp.ViewModel;
 
 namespace CoreMVC_Spider.Controllers
 {
@@ -26,7 +24,7 @@ namespace CoreMVC_Spider.Controllers
         }
 
         // GET: House
-        public async Task<ActionResult> IndexAsync()
+        public async Task<ActionResult> Index()
         {
             var houseDtoList = await _houseAppService.GetHouseData();
             return View(houseDtoList);
@@ -41,7 +39,7 @@ namespace CoreMVC_Spider.Controllers
         // GET: House/Create
         public async Task<ActionResult> Create()
         {
-            return RedirectToAction(nameof(IndexAsync));
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: House/Create
@@ -53,7 +51,7 @@ namespace CoreMVC_Spider.Controllers
             {
                 // TODO: Add insert logic here
 
-                return RedirectToAction(nameof(IndexAsync));
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
@@ -76,7 +74,7 @@ namespace CoreMVC_Spider.Controllers
             {
                 // TODO: Add update logic here
 
-                return RedirectToAction(nameof(IndexAsync));
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
@@ -99,7 +97,7 @@ namespace CoreMVC_Spider.Controllers
             {
                 // TODO: Add delete logic here
 
-                return RedirectToAction(nameof(IndexAsync));
+                return RedirectToAction(nameof(Index));
             }
             catch
             {

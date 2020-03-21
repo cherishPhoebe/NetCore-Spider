@@ -200,13 +200,16 @@ namespace ZY.Application.HouseApp
                                         var preSaleTables = saleInfoNode?.SelectNodes(".//table");
                                         var perSaleTrs = preSaleTables?.LastOrDefault()?.SelectNodes(".//tr");
                                         var perSaleList = new List<PerSaleInfoDto>();
-                                        for (int i = 1; i < perSaleTrs.Count; i++)
+                                        if (perSaleTrs != null)
                                         {
-                                            var perSaleInfo = new PerSaleInfoDto();
-                                            perSaleInfo.License = perSaleTrs[i].SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
-                                            perSaleInfo.IssueDate = perSaleTrs[i].SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText;
-                                            perSaleInfo.BindBuilding = perSaleTrs[i].SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText;
-                                            perSaleList.Add(perSaleInfo);
+                                            foreach (var tr in perSaleTrs)
+                                            {
+                                                var perSaleInfo = new PerSaleInfoDto();
+                                                perSaleInfo.License = tr.SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
+                                                perSaleInfo.IssueDate = tr.SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText;
+                                                perSaleInfo.BindBuilding = tr.SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText;
+                                                perSaleList.Add(perSaleInfo);
+                                            }
                                         }
                                         house.PerSaleList = perSaleList;
 
@@ -215,18 +218,20 @@ namespace ZY.Application.HouseApp
                                         var priceTable = detailDoc.DocumentNode.SelectNodes("//div[@class=\"main-item\"]")?[4]?.SelectNodes(".//table");
                                         var priceTrs = priceTable?.LastOrDefault()?.SelectNodes(".//tr");
                                         var priceList = new List<PriceInfoDto>();
-                                        foreach (var tr in priceTrs)
+                                        if (priceTrs != null)
                                         {
-                                            var priceInfo = new PriceInfoDto();
-                                            priceInfo.RecordDate = tr.SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
-                                            priceInfo.AvgPrice = tr.SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;", "");
-                                            priceInfo.StartingPrice = tr.SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;", "");
-                                            priceInfo.PriceDescription = tr.SelectNodes(".//td[4]")?.FirstOrDefault()?.InnerText;
-                                            priceList.Add(priceInfo);
+                                            foreach (var tr in priceTrs)
+                                            {
+                                                var priceInfo = new PriceInfoDto();
+                                                priceInfo.RecordDate = tr.SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
+                                                priceInfo.AvgPrice = tr.SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;", "");
+                                                priceInfo.StartingPrice = tr.SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;", "");
+                                                priceInfo.PriceDescription = tr.SelectNodes(".//td[4]")?.FirstOrDefault()?.InnerText;
+                                                priceList.Add(priceInfo);
+                                            }
                                         }
                                         house.PriceList = priceList;
                                     }
-
                                 }
                             }
                         }
