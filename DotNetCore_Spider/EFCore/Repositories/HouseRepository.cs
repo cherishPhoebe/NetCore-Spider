@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using ZY.Domain.Entities;
 using ZY.Domain.IRepositories;
 
@@ -16,14 +17,14 @@ namespace ZY.EFCore.Repositories
 
         public House Get(string houseKey)
         {
-            var house = _dbContext.Set<House>().Where(it => it.HouseKey == houseKey).FirstOrDefault();
+            var house = _dbContext.Set<House>().Where(it => it.HouseKey == houseKey).Include(h => h.PerSaleList).Include(h => h.PriceList).FirstOrDefault();
             return house;
         }
 
         public House InsertOrUpdateByHouseKey(House house,bool autoSave = true)
         {
             if (Get(house.HouseKey) != null)
-                return Update(house, autoSave);
+                Delete(house);
             return Insert(house, autoSave);
         }
 
