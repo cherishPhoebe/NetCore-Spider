@@ -17,14 +17,15 @@ namespace ZY.EFCore.Repositories
 
         public House Get(string houseKey)
         {
-            var house = _dbContext.Set<House>().Where(it => it.HouseKey == houseKey).Include(h => h.PerSaleList).Include(h => h.PriceList).FirstOrDefault();
+            var house = _dbContext.Set<House>().Where(it => it.HouseKey == houseKey).FirstOrDefault();
             return house;
         }
 
         public House InsertOrUpdateByHouseKey(House house,bool autoSave = true)
         {
-            if (Get(house.HouseKey) != null)
-                Delete(house);
+            var oldHouse = Get(house.HouseKey);
+            if (oldHouse != null)
+                Delete(oldHouse);
             return Insert(house, autoSave);
         }
 

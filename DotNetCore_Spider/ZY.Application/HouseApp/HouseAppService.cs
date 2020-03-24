@@ -202,12 +202,12 @@ namespace ZY.Application.HouseApp
                                         var perSaleList = new List<PerSaleInfoDto>();
                                         if (perSaleTrs != null)
                                         {
-                                            foreach (var tr in perSaleTrs)
+                                            for (var i = 1;i < perSaleTrs.Count;i++)
                                             {
                                                 var perSaleInfo = new PerSaleInfoDto();
-                                                perSaleInfo.License = tr.SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
-                                                perSaleInfo.IssueDate = tr.SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText;
-                                                perSaleInfo.BindBuilding = tr.SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText;
+                                                perSaleInfo.License = perSaleTrs[i].SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
+                                                perSaleInfo.IssueDate = perSaleTrs[i].SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText;
+                                                perSaleInfo.BindBuilding = perSaleTrs[i].SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText;
                                                 perSaleList.Add(perSaleInfo);
                                             }
                                         }
@@ -220,13 +220,13 @@ namespace ZY.Application.HouseApp
                                         var priceList = new List<PriceInfoDto>();
                                         if (priceTrs != null)
                                         {
-                                            foreach (var tr in priceTrs)
+                                            for (var i = 1;i<priceTrs.Count;i++)
                                             {
                                                 var priceInfo = new PriceInfoDto();
-                                                priceInfo.RecordDate = tr.SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
-                                                priceInfo.AvgPrice = tr.SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;", "");
-                                                priceInfo.StartingPrice = tr.SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;", "");
-                                                priceInfo.PriceDescription = tr.SelectNodes(".//td[4]")?.FirstOrDefault()?.InnerText;
+                                                priceInfo.RecordDate = priceTrs[i].SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
+                                                priceInfo.AvgPrice = priceTrs[i].SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;", "");
+                                                priceInfo.StartingPrice = priceTrs[i].SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;", "");
+                                                priceInfo.PriceDescription = priceTrs[i].SelectNodes(".//td[4]")?.FirstOrDefault()?.InnerText;
                                                 priceList.Add(priceInfo);
                                             }
                                         }
@@ -240,7 +240,7 @@ namespace ZY.Application.HouseApp
 
                 houseList.ForEach(item =>
                 {
-                    _houseRepository.InsertOrUpdate(_mapper.Map<House>(item));
+                    _houseRepository.InsertOrUpdateByHouseKey(_mapper.Map<House>(item));
                 });
 
                 return houseList;
