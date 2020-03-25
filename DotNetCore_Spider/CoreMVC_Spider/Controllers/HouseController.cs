@@ -26,7 +26,9 @@ namespace CoreMVC_Spider.Controllers
         // GET: House
         public async Task<ActionResult> Index()
         {
-            var houseDtoList = await _houseAppService.GetHouseData();
+            await _houseAppService.CreateHouseRecurringJobAsync();
+
+            var houseDtoList = _houseAppService.GetAllList();
             return View(houseDtoList);
         }
 
@@ -37,7 +39,7 @@ namespace CoreMVC_Spider.Controllers
         }
 
         // GET: House/Create
-        public async Task<ActionResult> Create()
+        public ActionResult Create()
         {
             return RedirectToAction(nameof(Index));
         }

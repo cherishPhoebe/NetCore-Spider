@@ -115,7 +115,6 @@ namespace CoreMVC_Spider
             app.UseHangfireDashboard();
             BackgroundJob.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
 
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

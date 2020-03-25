@@ -57,5 +57,6 @@ namespace ZY.Application.HouseApp
 
         Task<List<HouseDto>> GetHouseData();
 
+        Task CreateHouseRecurringJobAsync();
     }
 }

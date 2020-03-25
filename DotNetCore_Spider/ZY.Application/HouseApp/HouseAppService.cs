@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Hangfire;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -251,6 +252,89 @@ namespace ZY.Application.HouseApp
                 _logger.LogError(ex,"楼盘数据获取失败");
                 throw;
             }
+        }
+
+
+        /// <summary>
+        /// 创建获取House数据每日Job
+        /// </summary>
+        public async Task CreateHouseRecurringJobAsync()
+        { 
+            // 抓取https://cs.newhouse.fang.com/house/s/b91/ 楼盘数据
+            var urlList = new List<string>();
+            var houseList = new List<HouseDto>();
+            var random = new Random();
+
+            var baseUrl = @"https://cs.newhouse.fang.com/house/s/b9";
+            for (int i = 1; i <= 1; i++)
+            {
+                urlList.Add(baseUrl + i);
+            }
+            HttpClient client = _httpClientFactory.CreateClient("House");
+            foreach (var url in urlList)
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                using (var response = await client.SendAsync(request))
+                {
+                    using (var content = response.Content)
+                    {
+                        var result = await content.ReadAsStringAsync();
+                        var document = new HtmlDocument();
+                        document.LoadHtml(result);
+                        var nodes = document.DocumentNode.SelectNodes("//*[@id='newhouse_loupai_list']/ul");
+                        if (nodes != null && nodes.Count > 0)
+                        {
+                            var loupanUlNode = nodes.First();
+                            var loupanLiNodes = loupanUlNode.SelectNodes(".//li");
+                            foreach (var li in loupanLiNodes)
+                            {
+                                var houseModel = new HouseDto();
+                                var titleNodes = li.SelectNodes(".//div[@class=\"nlcd_name\"]/a");
+
+                                if (titleNodes != null && titleNodes.Count > 0)
+                                {
+                                    if (!string.IsNullOrEmpty(titleNodes.First().InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "")))
+                                    {
+                                        houseModel.Url = "https:" + titleNodes.First().GetAttributeValue("href", "");
+                                        houseList.Add(houseModel);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            foreach (var house in houseList)
+            {
+                var houseHomeRequest = new HttpRequestMessage(HttpMethod.Get, house.Url);
+
+                using (var homeResponse = await client.SendAsync(houseHomeRequest))
+                {
+                    using (var content = homeResponse.Content)
+                    {
+                        var result = await content.ReadAsStringAsync();
+                        var document = new HtmlDocument();
+                        document.LoadHtml(result);
+
+                        var detailLinkNodes = document.DocumentNode.SelectNodes("//*[@id=\"orginalNaviBox\"]/a[2]");
+                        if (detailLinkNodes != null && detailLinkNodes.Count > 0)
+                        {
+                            house.HomeUrl = "https:" + detailLinkNodes.First().GetAttributeValue("href", "");
+                            Regex reg = new Regex(@"house.{1}(\d*).{1}housedetail", RegexOptions.IgnoreCase);
+                            var id = reg.Match(house.HomeUrl).Groups.LastOrDefault()?.Value;
+                            house.HouseKey = id;
+                            string cronStr = random.Next(0, 60) + " " + random.Next(0, 24) + " * * *";
+                            RecurringJob.AddOrUpdate(id,() => GetOrUpdateHouseDataByHouseKey(house.HouseKey,house.HomeUrl), cronStr);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void GetOrUpdateHouseDataByHouseKey(string houseKey, string detailUrl)
+        {
+
         }
 
         public HouseDto InsertOrUpdateByHouseKey(HouseDto dto, bool autoSave = true)
