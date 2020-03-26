@@ -325,16 +325,118 @@ namespace ZY.Application.HouseApp
                             var id = reg.Match(house.HomeUrl).Groups.LastOrDefault()?.Value;
                             house.HouseKey = id;
                             string cronStr = random.Next(0, 60) + " " + random.Next(0, 24) + " * * *";
-                            RecurringJob.AddOrUpdate(id,() => GetOrUpdateHouseDataByHouseKey(house.HouseKey,house.HomeUrl), cronStr);
+                            RecurringJob.AddOrUpdate(id,() => GetOrUpdateHouseDataByHouseKeyAsync(house.HouseKey,house.Url), cronStr);
                         }
                     }
                 }
             }
         }
 
-        public void GetOrUpdateHouseDataByHouseKey(string houseKey, string detailUrl)
+        public async Task GetOrUpdateHouseDataByHouseKeyAsync(string houseKey, string detailUrl)
         {
+            HttpClient client = _httpClientFactory.CreateClient("House");
+            var houseHomeRequest = new HttpRequestMessage(HttpMethod.Get, detailUrl);
+            var house = new HouseDto();
+            using (var homeResponse = await client.SendAsync(houseHomeRequest))
+            {
+                using (var content = homeResponse.Content)
+                {
+                    var result = await content.ReadAsStringAsync();
+                    var document = new HtmlDocument();
+                    document.LoadHtml(result);
 
+                    var detailLinkNodes = document.DocumentNode.SelectNodes("//*[@id=\"orginalNaviBox\"]/a[2]");
+                    if (detailLinkNodes != null && detailLinkNodes.Count > 0)
+                    {
+                        house.HomeUrl = "https:" + detailLinkNodes.First().GetAttributeValue("href", "");
+                        Regex reg = new Regex(@"house.{1}(\d*).{1}housedetail", RegexOptions.IgnoreCase);
+                        var id = reg.Match(house.HomeUrl).Groups.LastOrDefault()?.Value;
+                        house.HouseKey = id;
+
+                        var detailRequest = new HttpRequestMessage(HttpMethod.Get, house.HomeUrl);
+
+                        using (var detailResponse = await client.SendAsync(detailRequest))
+                        {
+                            using (var detailContent = detailResponse.Content)
+                            {
+                                var detailResult = await detailContent.ReadAsStringAsync();
+                                var detailDoc = new HtmlDocument();
+                                detailDoc.LoadHtml(detailResult);
+                                // 基础信息
+                                var baseInfoNode = detailDoc.DocumentNode.SelectNodes("//div[@class=\"main-item\"]")?[0];
+                                var pointNodes = baseInfoNode?.SelectNodes(".//a/span[2]");
+                                house.Point = pointNodes?.FirstOrDefault()?.InnerText;
+                                var baseInfoLiNodes = baseInfoNode?.SelectNodes(".//ul/li");
+                                var baseInfoDic = new Dictionary<string, string>();
+                                for (int i = 0; i < 8; i++)
+                                {
+                                    var keyNode = baseInfoLiNodes?[i].SelectSingleNode(".//div[1]");
+                                    var valueNode = baseInfoLiNodes?[i].SelectSingleNode(".//div[2]");
+                                    if (keyNode is null)
+                                        break;
+                                    baseInfoDic.Add(keyNode.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "").Replace("：", ""),
+                                        valueNode.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", ""));
+                                }
+                                house.BaseInfoJson = JsonConvert.SerializeObject(baseInfoDic);
+
+                                //销售信息
+                                var saleInfoNode = detailDoc.DocumentNode.SelectNodes("//div[@class=\"main-item\"]")?[1];
+                                var saleInfoLiNodes = saleInfoNode?.SelectNodes(".//ul/li");
+                                var saleInfoDic = new Dictionary<string, string>();
+                                for (int i = 0; i < (saleInfoLiNodes?.Count ?? 0) - 1; i++)
+                                {
+                                    var keyNode = saleInfoLiNodes?[i].SelectSingleNode(".//div[1]");
+                                    var valueNode = saleInfoLiNodes?[i].SelectSingleNode(".//div[2]");
+                                    if (keyNode is null)
+                                        break;
+                                    saleInfoDic.Add(keyNode.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", "").Replace("：", ""),
+                                        valueNode.InnerText.Replace("\n", "").Replace(" ", "").Replace("\t", "").Replace("\r", ""));
+                                }
+                                house.SaseInfoJson = JsonConvert.SerializeObject(saleInfoDic);
+
+
+                                // 预售信息
+                                var preSaleTables = saleInfoNode?.SelectNodes(".//table");
+                                var perSaleTrs = preSaleTables?.LastOrDefault()?.SelectNodes(".//tr");
+                                var perSaleList = new List<PerSaleInfoDto>();
+                                if (perSaleTrs != null)
+                                {
+                                    for (var i = 1; i < perSaleTrs.Count; i++)
+                                    {
+                                        var perSaleInfo = new PerSaleInfoDto();
+                                        perSaleInfo.License = perSaleTrs[i].SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
+                                        perSaleInfo.IssueDate = perSaleTrs[i].SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText;
+                                        perSaleInfo.BindBuilding = perSaleTrs[i].SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText;
+                                        perSaleList.Add(perSaleInfo);
+                                    }
+                                }
+                                house.PerSaleList = perSaleList;
+
+                                // 价格信息
+
+                                var priceTable = detailDoc.DocumentNode.SelectNodes("//div[@class=\"main-item\"]")?[4]?.SelectNodes(".//table");
+                                var priceTrs = priceTable?.LastOrDefault()?.SelectNodes(".//tr");
+                                var priceList = new List<PriceInfoDto>();
+                                if (priceTrs != null)
+                                {
+                                    for (var i = 1; i < priceTrs.Count; i++)
+                                    {
+                                        var priceInfo = new PriceInfoDto();
+                                        priceInfo.RecordDate = priceTrs[i].SelectNodes(".//td[1]")?.FirstOrDefault()?.InnerText;
+                                        priceInfo.AvgPrice = priceTrs[i].SelectNodes(".//td[2]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;", "");
+                                        priceInfo.StartingPrice = priceTrs[i].SelectNodes(".//td[3]")?.FirstOrDefault()?.InnerText.Replace("&nbsp;", "");
+                                        priceInfo.PriceDescription = priceTrs[i].SelectNodes(".//td[4]")?.FirstOrDefault()?.InnerText;
+                                        priceList.Add(priceInfo);
+                                    }
+                                }
+                                house.PriceList = priceList;
+                            }
+                        }
+                    }
+                }
+
+                InsertOrUpdateByHouseKey(house);
+            }
         }
 
         public HouseDto InsertOrUpdateByHouseKey(HouseDto dto, bool autoSave = true)
