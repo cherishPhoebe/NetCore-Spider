@@ -266,7 +266,7 @@ namespace ZY.Application.HouseApp
             var random = new Random();
 
             var baseUrl = @"https://cs.newhouse.fang.com/house/s/b9";
-            for (int i = 1; i <= 1; i++)
+            for (int i = 1; i <= 33; i++)
             {
                 urlList.Add(baseUrl + i);
             }
@@ -325,7 +325,7 @@ namespace ZY.Application.HouseApp
                             var id = reg.Match(house.HomeUrl).Groups.LastOrDefault()?.Value;
                             house.HouseKey = id;
                             string cronStr = random.Next(0, 60) + " " + random.Next(0, 24) + " * * *";
-                            RecurringJob.AddOrUpdate(id,() => GetOrUpdateHouseDataByHouseKeyAsync(house.HouseKey,house.Url), cronStr);
+                            RecurringJob.AddOrUpdate(id,() => GetOrUpdateHouseDataByHouseKeyAsync(house.HouseKey,house.Url), cronStr, TimeZoneInfo.Local,"House");
                         }
                     }
                 }
